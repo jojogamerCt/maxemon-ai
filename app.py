@@ -224,11 +224,24 @@ with gr.Blocks(css=custom_css, theme=gr.themes.Soft(), title="Maxemon AI - Pokem
                     gr.Markdown("### Training Configuration")
                     gr.Markdown("""
                     **Recommended Dataset Sources:**
-                    - [Pokémon Images on Hugging Face](https://huggingface.co/datasets/lambdalabs/pokemon-blip-captions)
-                    - [Pokémon Dataset on Kaggle](https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset)
-                    - Your own curated Pokémon images
                     
-                    **Dataset Format:** Place images in a folder with optional `.txt` caption files
+                    **Option 1: Use Pre-trained LoRAs (Easiest)**
+                    - Download from [CivitAI](https://civitai.com/tag/pokemon)
+                    - Place `.safetensors` files in `./loras/` directory
+                    - Use directly in Generate tab
+                    
+                    **Option 2: Create Your Own Dataset**
+                    - Collect 100-500 images (creature designs, fan art with permission)
+                    - Use PokeAPI, public domain sources, or your own art
+                    - Add optional `.txt` caption files
+                    - Place in `./datasets/pokemon/` folder
+                    
+                    **Option 3: Generate Synthetic Dataset**
+                    - Use base SDXL to generate creature images
+                    - Manually caption and curate
+                    - Train on synthetic data
+                    
+                    **Important:** Only use images you have legal rights to use!
                     """)
                     
                     train_dataset = gr.Textbox(
@@ -293,7 +306,7 @@ with gr.Blocks(css=custom_css, theme=gr.themes.Soft(), title="Maxemon AI - Pokem
             # Maxemon AI - Complete Guide
             
             ## 🎯 What is this?
-            Maxemon AI is a powerful tool for training custom LoRA models and generating Pokémon artwork using SDXL.
+            Maxemon AI is a powerful tool for training custom LoRA models and generating Pokémon-style artwork using SDXL.
             
             ## 🚀 Quick Start
             
@@ -304,39 +317,65 @@ with gr.Blocks(css=custom_css, theme=gr.themes.Soft(), title="Maxemon AI - Pokem
             4. Click Generate!
             
             ### For Training:
-            1. Prepare your dataset (images + optional captions)
+            1. Prepare your dataset (see Dataset Guide below)
             2. Go to the **Train LoRA** tab
             3. Configure settings (defaults work well for RTX 3070)
             4. Click Start Training
             5. Wait for training to complete
             6. Use your LoRA in the Generate tab!
             
-            ## 📊 Recommended Datasets
+            ## 📊 Dataset Guide
             
-            - **Pokémon Official Artwork**: High-quality Ken Sugimori style artwork
-            - **Pokémon Sprites**: Game sprites for pixel-art style
-            - **Fan Art Collections**: Diverse artistic styles
-            - **Mixed Dataset**: Combine official + fan art for versatility
+            ### Option 1: Download Pre-trained LoRAs (Recommended)
+            
+            **Easiest approach - skip training entirely:**
+            - Visit [CivitAI](https://civitai.com/tag/pokemon) or [Hugging Face](https://huggingface.co/models?search=pokemon)
+            - Download `.safetensors` LoRA files
+            - Place in `./loras/` directory
+            - Refresh and select in Generate tab
+            
+            ### Option 2: Create Your Own Dataset
+            
+            **Legal sources for training data:**
+            
+            1. **Your Own Art** - Best option!
+            2. **Commissioned Art** - With artist permission
+            3. **Public Domain/CC0** - Check licenses
+            4. **PokeAPI** - Limited official images (use carefully)
+            5. **Fan Art** - Only with explicit permission
+            6. **Synthetic Data** - Generate with base SDXL, then refine
+            
+            **Dataset Structure:**
+            ```
+            datasets/pokemon/
+            ├── image_001.png
+            ├── image_001.txt  ("fire type creature with flames")
+            ├── image_002.png
+            ├── image_002.txt
+            └── ...
+            ```
             
             ### Dataset Tips:
             - **Minimum**: 20-50 images for basic concepts
             - **Recommended**: 100-500 images for best results
-            - **Quality over Quantity**: Clean, well-composed images work best
-            - **Captions**: Optional but improve results (describe each pokemon)
+            - **Quality over Quantity**: Clean, consistent style
+            - **Captions**: Describe type, colors, features, pose
+            - **Variety**: Different poses, angles, types
             
             ## ⚙️ Training Settings Guide
             
             ### For RTX 3070 (8GB VRAM):
             - **Resolution**: 1024px (SDXL native)
-            - **Batch Size**: 1-2
+            - **Batch Size**: 1
             - **Epochs**: 10-20 for small datasets, 5-10 for large
             - **Learning Rate**: 1e-4 (default is good)
             - **8-bit Adam**: ✅ Enabled (saves VRAM)
             - **Gradient Checkpointing**: ✅ Enabled (saves VRAM)
             
-            ### LoRA Rank & Alpha:
-            - **Rank**: 16-32 (higher = more capacity, more VRAM)
-            - **Alpha**: Usually same as rank
+            ### LoRA Parameters:
+            - **Rank**: 32 (good balance)
+            - **Alpha**: 32 (usually same as rank)
+            - Higher rank = more capacity but more VRAM
             
             ## 🎨 Prompt Engineering Tips
             
@@ -357,10 +396,11 @@ with gr.Blocks(css=custom_css, theme=gr.themes.Soft(), title="Maxemon AI - Pokem
             
             ## 🔥 Advanced Tips
             
-            1. **Multiple LoRAs**: Train separate LoRAs for different styles (official art, sprites, regional forms)
-            2. **LoRA Mixing**: Use LoRA scale 0.5-1.0 for subtle effects, 1.0-1.5 for strong style
-            3. **Seed Control**: Use same seed for variations of a design
-            4. **Batch Generation**: Generate 2-4 images to pick the best
+            1. **Use Pre-trained LoRAs**: Fastest way to get started
+            2. **Multiple LoRAs**: Train separate LoRAs for different styles
+            3. **LoRA Mixing**: Use scale 0.5-1.0 for subtle, 1.0-1.5 for strong
+            4. **Seed Control**: Use same seed for design variations
+            5. **Batch Generation**: Generate 2-4 to pick the best
             
             ## 💾 System Requirements
             
@@ -372,19 +412,30 @@ with gr.Blocks(css=custom_css, theme=gr.themes.Soft(), title="Maxemon AI - Pokem
             ## 🐛 Troubleshooting
             
             - **Out of VRAM**: Reduce batch size to 1, enable 8-bit Adam
-            - **Slow Training**: Normal for SDXL, expect 1-2 hours for small datasets
-            - **Bad Results**: Try more training steps, better dataset, adjust learning rate
+            - **Slow Training**: Normal for SDXL (1-2 hours for small datasets)
+            - **Bad Results**: More training steps, better dataset, adjust LR
             - **LoRA too strong**: Reduce LoRA scale in generation
             
             ## 📚 Model Info
             
             - **Base Model**: SDXL 1.0 (Stable Diffusion XL)
             - **Training Method**: LoRA (Low-Rank Adaptation)
-            - **Why SDXL?**: Better quality than SD 1.5, supports higher resolutions, better prompt understanding
+            - **Why SDXL?**: Superior quality, higher resolutions, better prompts
+            
+            ## ⚠️ Legal Notice
+            
+            **Important:**
+            - Pokémon is trademarked by Nintendo/Game Freak/The Pokémon Company
+            - Use only datasets you have legal rights to use
+            - Generated images are for personal/educational use
+            - Do not use for commercial purposes without licensing
+            - Consider using generic "creature" concepts to avoid copyright issues
             
             ---
             
             **Created with ❤️ for Pokémon fans and AI enthusiasts!**
+            
+            **Tip:** Start by downloading pre-trained LoRAs from CivitAI to experiment before training your own!
             """)
     
     # Event handlers

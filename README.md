@@ -95,37 +95,89 @@ The app will open at `http://localhost:7860`
 
 ### Train a Custom LoRA
 
-1. Prepare your dataset:
-   - Create a folder: `./datasets/pokemon`
-   - Add your images (PNG/JPG)
-   - Optionally add `.txt` caption files
-
+1. Prepare your dataset (see Dataset section below)
 2. Go to the **Train LoRA** tab
 3. Configure settings:
    - Dataset Path: `./datasets/pokemon`
    - LoRA Name: `my_pokemon_lora`
    - Epochs: 10-20
    - Keep other defaults
-
 4. Click **Start Training**
 5. Monitor progress in the logs
 6. Use your LoRA in the Generate tab!
 
-## 📊 Recommended Datasets
+## 📊 Dataset Recommendations
 
-### Pre-made Datasets
+### Option 1: Create Your Own Dataset (Recommended)
 
-- **[Pokémon BLIP Captions](https://huggingface.co/datasets/lambdalabs/pokemon-blip-captions)** - High-quality with captions
-- **[Pokémon Images Dataset](https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset)** - Official artwork
-- **[Pokémon Sprites](https://www.kaggle.com/datasets/vishalsubbiah/pokemon-images-and-types)** - Game sprites
+**Best approach for avoiding copyright issues:**
+
+1. **Use Existing LoRA Models** - Many pre-trained Pokémon LoRAs exist on CivitAI:
+   - [CivitAI Pokémon LoRAs](https://civitai.com/tag/pokemon)
+   - Search for "pokemon" or "creature design" models
+   - Download and place in `./loras/` directory
+
+2. **Scrape Legally** - Use public domain or creative commons images:
+   - Fan art with permissive licenses (CC-BY, CC0)
+   - Your own artwork or commissions
+   - Public domain creature designs
+
+3. **Generate Synthetic Dataset** - Bootstrap using existing models:
+   - Use base SDXL to generate 100-200 creature images
+   - Use prompts like "fantasy creature, monster design, official artwork"
+   - Manually caption each image
+   - Train LoRA on this synthetic dataset
+
+### Option 2: Alternative Datasets
+
+**Legal and Available Options:**
+
+- **[Creature Designs Dataset](https://huggingface.co/datasets/search?q=creature)** - Search HF for creature/monster datasets
+- **[Kaggle Monster/Creature Datasets](https://www.kaggle.com/search?q=creature+design)** - Various creature design datasets
+- **[PokeAPI Images](https://pokeapi.co/)** - Official API (use responsibly, limited images)
+- **Custom Web Scraping** - Build your own using:
+  - DeviantArt (with artist permission)
+  - ArtStation (creative commons only)
+  - Your own commissioned artwork
+
+### Option 3: Use Pre-trained LoRAs
+
+**Skip training entirely:**
+
+1. Download pre-trained Pokémon LoRAs from:
+   - [CivitAI](https://civitai.com/) - Search "pokemon"
+   - [Hugging Face Models](https://huggingface.co/models?search=pokemon)
+   
+2. Place `.safetensors` file in `./loras/` directory
+
+3. Select in the Generate tab dropdown
+
+### Dataset Preparation Guide
+
+If creating your own dataset:
+
+```
+datasets/pokemon/
+├── image_001.png
+├── image_001.txt  (optional caption: "fire type creature with flames")
+├── image_002.png
+├── image_002.txt
+└── ...
+```
+
+**Caption Tips:**
+- Keep captions simple and descriptive
+- Focus on: type, colors, features, pose
+- Example: "blue water-type creature with fins, swimming pose"
 
 ### Dataset Guidelines
 
 - **Minimum**: 20-50 images for basic concepts
 - **Recommended**: 100-500 images for best results
-- **Quality**: Clean, well-composed images
-- **Captions**: Optional but improve quality
+- **Quality**: Clean, well-composed, consistent style
+- **Captions**: Highly recommended for better results
 - **Format**: PNG, JPG, or WebP
+- **Resolution**: 512px+ (will be resized to 1024)
 
 ## ⚙️ Configuration
 
@@ -257,14 +309,21 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## ⚠️ Disclaimer
 
-This project is for educational and creative purposes. Pokémon and related trademarks are property of Nintendo, Game Freak, and The Pokémon Company. Generated images should be used responsibly and in accordance with fair use guidelines.
+This project is for educational and creative purposes. Pokémon and related trademarks are property of Nintendo, Game Freak, and The Pokémon Company. 
+
+**Important:**
+- Use only datasets you have legal rights to use
+- Respect copyright and intellectual property
+- Generated images are for personal/educational use
+- Do not use for commercial purposes without proper licensing
+- Consider using generic "creature" or "monster" concepts instead of copyrighted characters
 
 ## 🙏 Acknowledgments
 
 - Stability AI for Stable Diffusion XL
 - Hugging Face for Diffusers library
 - Gradio team for the amazing UI framework
-- Pokémon community for inspiration
+- Open source AI community
 - kohya_ss for LoRA training techniques
 
 ## 📞 Support
